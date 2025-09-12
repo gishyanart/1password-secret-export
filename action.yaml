@@ -40,8 +40,7 @@ runs:
         OP_SECTIONS: ${{ inputs.sections }}
         EXPORT_VARIABLES: ${{ inputs.export_variables }}
         EXPORT_TO_FILE: ${{ inputs.export_to_file }}
-      run: |
-        ./action.sh
+      run: action.sh
 
 branding:
   icon: "terminal"
