@@ -36,7 +36,7 @@ runs:
       env:
         OP_VAULT: ${{ inputs.vault }}
         OP_ITEM: ${{ inputs.item }}
-        OP_TOKEN: ${{ inputs.token }}
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.token }}
         OP_SECTIONS: ${{ inputs.sections }}
         EXPORT_VARIABLES: ${{ inputs.export_variables }}
         EXPORT_TO_FILE: ${{ inputs.export_to_file }}
