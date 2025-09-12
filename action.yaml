@@ -42,3 +42,7 @@ runs:
         EXPORT_TO_FILE: ${{ inputs.export_to_file }}
       run: |
         ./action.sh
+
+branding:
+  icon: "terminal"
+  color: "black"
