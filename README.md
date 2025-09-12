@@ -34,7 +34,7 @@ This action uses the 1Password CLI to fetch secrets from a specified vault and i
 
 ```yaml
 - name: Export secrets from 1Password
-  uses: gishyanart/1password-secret-export@v0.1.4
+  uses: gishyanart/1password-secret-export@v0.1.0
   with:
     vault: "my-vault"
     item: "my-secrets"
@@ -45,7 +45,7 @@ This action uses the 1Password CLI to fetch secrets from a specified vault and i
 
 ```yaml
 - name: Export database secrets
-  uses: gishyanart/1password-secret-export@v0.1.4
+  uses: gishyanart/1password-secret-export@v0.1.0
   with:
     vault: "production"
     item: "database-config"
@@ -57,7 +57,7 @@ This action uses the 1Password CLI to fetch secrets from a specified vault and i
 
 ```yaml
 - name: Export to .env file
-  uses: gishyanart/1password-secret-export@v0.1.4
+  uses: gishyanart/1password-secret-export@v0.1.0
   with:
     vault: "development"
     item: "app-secrets"
@@ -109,7 +109,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Export production secrets
-        uses: gishyanart/1password-secret-export@v0.1.4
+        uses: gishyanart/1password-secret-export@v0.1.0
         with:
           vault: "production"
           item: "app-secrets"
