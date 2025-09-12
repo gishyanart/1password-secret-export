@@ -19,7 +19,7 @@ setup() {
   : "${OP_SERVICE_ACCOUNT_TOKEN:?OP_SERVICE_ACCOUNT_TOKEN is required}"
   : "${OP_SECTIONS:-''}"
   : "${EXPORT_VARIABLES:-true}"
-  : "${EXPORT_TO_FILE:-false}"
+  : "${EXPORT_TO_FILE:-''}"
 
   declare -gA ALLOWED_CATEGORIES
 
@@ -63,6 +63,15 @@ from_root() {
   op item get --vault "${OP_VAULT}" "${OP_ITEM}" --format=json | yq -o json '.fields[] | select(.section.id == "add more" and .label != "notesPlain") | {.label: .value} | . as $item ireduce ({}; . * $item )'
 }
 
+export_to_file() {
+	local file_dir
+	file_dir="$(dirname "${EXPORT_TO_FILE}")"
+	if ! [ "${file_dir}" ]; then
+		mkdir -p "${file_dir}"
+	fi
+	yq . -o shell < <(printf "%s" "${1}") >> "${EXPORT_TO_FILE}"
+}
+
 main() {
   local from_root from_sections result
   from_root="$(from_root)"
@@ -72,8 +81,8 @@ main() {
   if [ "${EXPORT_VARIABLES}" == "true" ]; then
     yq . -o shell < <(printf "%s" "${result}") >>"${GITHUB_ENV}"
   fi
-  if [ "${EXPORT_TO_FILE}" == "true" ]; then
-    yq . -o shell < <(printf "%s" "${result}") >>.env
+  if [ "${EXPORT_TO_FILE}" ]; then
+    export_to_file "${result}"
   fi
 }
 

@@ -19,14 +19,14 @@ This action uses the 1Password CLI to fetch secrets from a specified vault and i
 
 ## Inputs
 
-| Input              | Description                                               | Required | Default                       |
-| ------------------ | --------------------------------------------------------- | -------- | ----------------------------- |
-| `vault`            | 1Password vault name or ID                                | Yes      | -                             |
-| `item`             | 1Password item name or ID                                 | Yes      | -                             |
-| `token`            | 1Password service account token                           | Yes      | -                             |
-| `sections`         | Comma-separated list of 1Password item sections to export | No       | `''` (exports only root keys) |
-| `export_variables` | Export secrets to GitHub Actions environment variables    | No       | `true`                        |
-| `export_to_file`   | Whether to create .env file (appends if exist)            | No       | `false`                       |
+| Input              | Description                                                         | Required | Default                       |
+| ------------------ | ------------------------------------------------------------------- | -------- | ----------------------------- |
+| `vault`            | 1Password vault name or ID                                          | Yes      | -                             |
+| `item`             | 1Password item name or ID                                           | Yes      | -                             |
+| `token`            | 1Password service account token                                     | Yes      | -                             |
+| `sections`         | Comma-separated list of 1Password item sections to export           | No       | `''` (exports only root keys) |
+| `export_variables` | Export secrets to GitHub Actions environment variables              | No       | `true`                        |
+| `export_to_file`   | If specified, will export to file in .env format (appends if exist) | No       | `''`                          |
 
 ## Usage
 
@@ -81,7 +81,7 @@ The action sets the following internal environment variables:
 - `OP_SERVICE_ACCOUNT_TOKEN`: The service account token
 - `OP_SECTIONS`: The sections to export
 - `EXPORT_VARIABLES`: Whether to export to env vars
-- `EXPORT_TO_FILE`: Whether to create .env file (appends if exist)
+- `EXPORT_TO_FILE`: If specified, will export to file in .env format (appends if exist)
 
 ## Error Handling
 

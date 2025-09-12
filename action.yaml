@@ -21,8 +21,8 @@ inputs:
     default: 'true'
     required: false
   export_to_file:
-    description: create a .env file with the secrets
-    default: 'false'
+    description: if specified, will export to file in .env format
+    default: ''
     required: false
 
 runs:
