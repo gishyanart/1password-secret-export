@@ -51,7 +51,7 @@ from_sections() {
   readarray -t -d',' sections < <(printf "%s" "${OP_SECTIONS}")
   result='{}'
   for section in "${sections[@]}"; do
-    export OP_SECTION_NAME="${section,,}"
+    export OP_SECTION_NAME="${section}"
     # shellcheck disable=SC2016
     value="$(op item get --vault "${OP_VAULT}" "${OP_ITEM}" --format=json | yq -o json '.fields[] | select(.section.label == env(OP_SECTION_NAME) and .label != "notesPlain") | {.label: .value} | . as $item ireduce ({}; . * $item )')"
     result="$(merge "$result" "$value")"
