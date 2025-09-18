@@ -14,6 +14,9 @@ error_handler() {
 
 setup() {
 
+  command -v op >/dev/null 2>&1 || { echo "op CLI not found in PATH"; exit 1; }
+  command -v yq >/dev/null 2>&1 || { echo "yq not found in PATH"; exit 1; }
+
   : "${OP_VAULT:?OP_VAULT is required}"
   : "${OP_ITEM:?OP_ITEM is required}"
   : "${OP_SERVICE_ACCOUNT_TOKEN:?OP_SERVICE_ACCOUNT_TOKEN is required}"
@@ -48,6 +51,10 @@ merge() {
 
 from_sections() {
   local sections value result
+  if [ -z "${OP_SECTIONS}" ]; then
+    echo '{}'
+    return
+  fi
   readarray -t -d',' sections < <(printf "%s" "${OP_SECTIONS}")
   result='{}'
   for section in "${sections[@]}"; do
@@ -67,10 +74,32 @@ from_root() {
 export_to_file() {
 	local file_dir
 	file_dir="$(dirname "${EXPORT_TO_FILE}")"
-	if ! [ "${file_dir}" ]; then
-		mkdir -p "${file_dir}"
-	fi
+	mkdir -p "${file_dir}"
 	yq . -o shell < <(printf "%s" "${1}") >> "${EXPORT_TO_FILE}"
+}
+
+write_github_env() {
+  local key value json tmp
+  json="$1"
+  if [ -z "${GITHUB_ENV:-}" ]; then
+    echo "GITHUB_ENV is not set; skipping env export" >&2
+    return 0
+  fi
+  tmp="$(mktemp)"
+  yq -o shell < <(printf "%s" "${json}") > "${tmp}"
+  set -a
+  # shellcheck disable=SC1090
+  source "${tmp}"
+  set +a
+  rm "${tmp}"
+  while read -r key; do
+    {
+      printf '%s<<__OP_EOF__\n' "$key"
+      printf '%s\n' "${!key}"
+      printf '__OP_EOF__\n'
+    } >> "${GITHUB_ENV}"
+    printf '::add-mask::%s\n' "$key"
+  done < <(yq 'keys|.[]' < <(printf "%s" "${json}"))
 }
 
 main() {
@@ -79,7 +108,7 @@ main() {
   from_sections="$(from_sections)"
   result="$(merge "${from_root}" "${from_sections}")"
   if [ "${EXPORT_VARIABLES}" == "true" ]; then
-    yq . -o shell < <(printf "%s" "${result}") >>"${GITHUB_ENV}"
+    write_github_env "${result}"
   fi
   if [ "${EXPORT_TO_FILE}" ]; then
     export_to_file "${result}"
